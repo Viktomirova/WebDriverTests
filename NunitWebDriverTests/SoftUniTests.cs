@@ -1,4 +1,4 @@
-﻿using NUnit.Framework;
+using NUnit.Framework;
 
 using OpenQA.Selenium;
 using OpenQA.Selenium.Chrome;
@@ -13,7 +13,7 @@ namespace NunitWebDriverTests
         public void Setup_OpenBrowserAndNavigate()
         {
             var options = new ChromeOptions();
-            options.AddArgument("--headless");
+            options.AddArguments("--headless", "--window-size=1920,1200");
             this.driver = new ChromeDriver(options);
             driver.Url = "https://softuni.bg";
             driver.Manage().Window.Maximize();
@@ -28,7 +28,7 @@ namespace NunitWebDriverTests
         [Test]
         public void Test_Assert_Main_Page_Title()
         {
-            var aboutElement = driver.FindElement(By.CssSelector("#page-header > div > div > div > div.logo.hover-dropdown-btn > a > img.desktop-logo.hidden-xs"));
+            IWebElement aboutElement = driver.FindElement(By.CssSelector("#page-header > div > div > div > div.logo.hover-dropdown-btn > a > img.desktop-logo.hidden-xs"));
             aboutElement.Click();
             string expectedTitle = "Обучение по програмиране - Софтуерен университет";
             Assert.AreEqual(expectedTitle, driver.Title);
@@ -58,11 +58,13 @@ namespace NunitWebDriverTests
         public void Test_Search()
         {
             driver.FindElement(By.CssSelector("#search-icon-container > a > span > i")).Click();
-            driver.FindElement(By.CssSelector(".container > form #search-input")).Click();
-            driver.FindElement(By.CssSelector(".container > form #search-input")).SendKeys("qa");
-            driver.FindElement(By.CssSelector(".container > form #search-input")).SendKeys(Keys.Enter);
-            driver.FindElement(By.CssSelector(".search-title")).Click();
-            Assert.That(driver.FindElement(By.CssSelector(".search-title")).Text, Is.EqualTo("Резултати от търсене на “qa”"));
+            IWebElement searchField = driver.FindElement(By.CssSelector(".container > form #search-input"));
+            searchField.Click();
+            searchField.SendKeys("qa");
+            searchField.SendKeys(Keys.Enter);
+            IWebElement searchTitle = driver.FindElement(By.CssSelector(".search-title"));
+            searchTitle.Click();
+            Assert.That(searchTitle.Text, Is.EqualTo("Резултати от търсене на “qa”"));
         }
     }
 }
